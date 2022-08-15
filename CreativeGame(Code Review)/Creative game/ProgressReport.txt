@@ -1,0 +1,54 @@
+Prince Michael Agbo
+COSC 102: Project 2 Part 2
+Professor Elodie Fourquet
+Progress Report 2
+
+
+I have completed all the requirements for the base game.
+
+My creative game is a mining/digging game. The scrolling is controlled by the user
+so most of the methods dealing with speed, time elapsed e.t.c. were not needed.
+The changes I made were not backward compatible with the basegame
+so I put those files into a seperate zip folder.
+The user scrolls by using the arrow keys but cannot scroll offscreen
+or up to the rightmost column(to allow for repopulation).
+The game is multilevel. The level of difficulty increases as the number of
+treasures expected to be collected increases by 10(can be changed) while the life/health of the 
+player only increases by 1(can be changed).
+When the player gets within two levels of the final level(which would normally be 10 but can be changed, currently 5), 
+the probability of encountering an avoid object is doubled. This is what makes the game challenging coupled with the fact
+that avoid objects are random.
+Colliding with avoid objects depletes the lifeline/health of the player.
+The treasures are open to see but the avoid objects are hidden, like landmines.
+Also, the treasures change depending on the level.
+
+You do not have to pick up every treasure on the screen, you can keep going and more will be
+added to the screen. The number of levels(which would normally be 10) can be changed by changing 
+the FINAL_LEVEL field in ScrollingGame. Note that the higher the number of levels, the harder it 
+is to actually win the game. Hence, my current number is 5 which is still challenging.
+The C key during gameplay is the cheat key and moves you to the highest level and 1 treasure 
+less than winning.
+
+
+I am most proud of the handleCollisions() method as it decides what happens in
+different scenarios when the user collides with a treasure, avoid objects that are 
+hidden, underground soil or empty space.
+
+
+To the user, the avoid objects are hidden but my implementation
+was to randomly get a location(either row or column) and check if that random 
+location matches the current location of the player when they dig, uncover and move into
+a new space. If the random location matches the players location, I assign that location
+to an avoid object thus simulating an uncovering and collision with avoid objects. 
+Because the avoid objects are "hidden", the handleCollisions() method calls a helper 
+method checkCollideWithAvoid() to check and simulate this collision with an avoid.
+Most of my variables are class variables intended to keep track of the gamestate like
+the current level, the score, the lifeline of the player, or the image files used.
+If the player fails at any level, the game is merciless and requires them to start again from level 1.
+After winning each level, they have the option to restart from level 1, quit the game or move on to the next level.
+Restarting reinitializes the game state while next level increments or reinitializes some fields.
+I used an array called next to make the chance of displaying a treasure relative to a block of soil 1 to 5.
+Since speed is no longer a factor in the gameplay, commas and fullstops will no longer affect the speed of play
+but pressing P still pauses the game.
+Pressing D highlights the grid lines, S takes and saves a screenshot, Q quits the game, R restarts from level 1
+(if you finish a level or lose), and N takes you to the next level(if you won the previous level).

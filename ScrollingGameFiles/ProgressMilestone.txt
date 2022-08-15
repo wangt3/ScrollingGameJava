@@ -1,0 +1,11 @@
+Everything in base game works. There is an implemented pauseTimer in base game seperate from the timerClicks, to help with pausing.
+checkLastKeyPressed updates too quickly in the GameGrid class, so this additional timer was made to slow down and allow the 
+Scanner to collect information, instead of freezing and failing to collect data over and over.
+Probability of items spawned was changed from boolean to integer to increase control over item spawning. Image changing has been
+implemented. Screenshots are saved to screenshot.png, with a planned screenshot+(n).png to better organize screenshots. 
+Several known bugs with scrollLeft have been squashed, mainly regarding array boundries and how the array updates left to right,
+up to down. This includes error with persistant objects blocked by the User object, multiple User object created by blocked objects,
+and tendencies to have objects repeat themselves infinitely until they are updated. For the border, text has been added into the 
+console to convey messages to the user. This feature will most likely be extended in the main game to multiple classes, as adding
+text to the main game other than the title screen or outcome screen is difficult to implement without knowledge of JFrame (not that
+I'm implying that I know how to use it) 

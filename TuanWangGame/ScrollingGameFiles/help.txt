@@ -1,0 +1,28 @@
+PRESS P TO UNPAUSE THE GAME
+
+Welcome brave hero, to the world of Aetsety. You are a prince, who has been hunted down by a pack of fiesty ninjas! But worry not, for you have the power of 
+C R A B on your side. Simply collect 5 tokens to power up into a crab and crush the ninja foes! Defeat 10 ninjas to force them to back off and win, but watch out, your crab powers doesnt last forever! Keep collecting crab tokens to stay in crab form, for if you are in your human form, you can only take 10 hits from the sneaky ninjas.
+
+Objectives
+----------
+In Human Form
+
+- Collect 5 crab tokens to power up into a crab
+- Avoid ninjas, as they can hurt you while you are a human
+- 10 hits and you lose!
+
+In Crab Form
+- Collect crab tokens to stay in crab form!
+- Defeat 10 ninjas to win!
+
+CONTROLS
+--------
+h - help
+P - Pause and upause. 
+
+Directional keys - move in that direction
+,/. - slow and speed up the game, repsectively
+
+s - take a screenshot
+d - reveal/hide cell borders
+t - displays time

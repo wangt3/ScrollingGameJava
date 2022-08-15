@@ -1,0 +1,231 @@
+import java.awt.event.KeyEvent;
+import java.awt.*;
+
+public class BaseGame extends ScrollingGame {
+		                           
+	private final String USER_IMG = "user.gif";    
+	private final String GET_IMG = "get.gif";      
+	private final String AVOID_IMG = "avoid.gif";
+	private final int FINAL_SCORE = 100;
+	private final int SCORE_INCREMENT = 10;
+	private final int LIFE = 10;
+	private final int SPEED = 10; 
+	
+	
+	private String[] eachCellFiles = {GET_IMG, null, null, null, AVOID_IMG};
+	private int score;
+	private int lifeline = LIFE;
+	private int screenNum;
+	private int numDPress;
+	
+	                                               
+	public BaseGame() {
+		this(H_DIM, W_DIM, U_ROW);
+	}
+		
+	public BaseGame(int hdim, int wdim, int urow) {
+		super.init(hdim, wdim, urow);
+	}
+	
+	/******************** Methods **********************/
+	
+	// update game state to reflect adding in new cells in the right-most column
+	public void populateRightEdge() {
+		int avoidCount = 0;
+		for(int k = 0; k < grid.getNumRows(); k++){
+		  grid.setCellImage(new Location(k, grid.getNumCols() - 1), eachCellFiles[rand.nextInt(5)]);
+		  if (grid.getCellImage(new Location(k, grid.getNumCols() - 1)) != null && 
+		  	  grid.getCellImage(new Location(k, grid.getNumCols() - 1)).equals(AVOID_IMG)){
+		  		avoidCount++;
+		  }
+		}
+		if (avoidCount > grid.getNumRows() / 2){
+			populateRightEdge();
+		}
+	}
+	
+	// updates the game state to reflect scrolling left by one column
+	public void scrollLeft() {
+		for(int i = 0; i < grid.getNumRows(); i++){ 
+  	  	  for(int j = 1; j < grid.getNumCols(); j++){  
+	  	  	  grid.setCellImage(new Location(i, j - 1), grid.getCellImage(new Location(i, j)));
+  	  	  }  	  	  
+  	  	}
+  	  	if (grid.getCellImage(new Location(userRow, userCol)) != null){
+  	  		handleCollision();
+		}
+		grid.setCellImage(new Location(userRow, userCol), getUserImg());
+		if (userCol != 0){
+			grid.setCellImage(new Location(userRow, userCol - 1), null);
+		}	
+	}     
+	
+
+	
+	// returns the user image
+	public String getUserImg() {
+		return USER_IMG;
+	}
+	
+	/* handleCollision()
+	 * handle a collision between the user and an object in the game
+	 */  
+	public void handleCollision() {
+		if (grid.getCellImage(new Location(userRow, userCol)) != null){
+			if (grid.getCellImage(new Location(userRow, userCol)).equals(GET_IMG)){
+				score += SCORE_INCREMENT;
+			}
+			else{
+				lifeline--;
+			}	
+		}	
+	}
+	
+	//---------------------------------------------------//
+	
+	// handles actions upon mouse click in game
+	public void handleMouseClick() {
+		
+		Location loc = grid.checkLastLocationClicked();
+		
+		if (loc != null){
+			System.out.println("You clicked on a square " + loc);
+		}
+	
+	}
+	
+	//handles actions upon mouse click when splash screen displayed
+	public void handleClickOutsideGame(){
+		Location loc = grid.checkLastLocationClicked();
+		while(loc == null){
+			grid.sleep(timerDelay);
+			loc = grid.checkLastLocationClicked();
+		}
+		
+	}
+	
+	// handles actions upon key press in game
+	public void handleKeyPress() {
+			
+		int key = grid.checkLastKeyPressed();
+		
+		//use Java constant names for key presses
+		//http://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_DOWN
+		
+		// Q for quit
+		if (key == KeyEvent.VK_Q)
+			System.exit(0);
+		
+		else if (key == KeyEvent.VK_S){
+			System.out.println("could save the screen: add the call");
+			grid.save("Screenshot" + screenNum + ".gif");
+			screenNum++;
+		}
+		
+		/* To help you with step 9: 
+		   use the 'T' key to help you with implementing speed up/slow down/pause
+    	   this prints out a debugging message */
+		else if (key == KeyEvent.VK_T)  {
+			boolean interval =  (timerClicks % FACTOR == 0);
+			System.out.println("timerDelay " + timerDelay + " msElapsed reset " + 
+				msElapsed + " interval " + interval);
+		}
+		else if(key == KeyEvent.VK_LEFT && userCol > 0){
+			grid.setCellImage(new Location(userRow, userCol), null);
+			userCol--;
+			handleCollision();
+			grid.setCellImage(new Location(userRow, userCol), getUserImg());
+		}
+		else if(key == KeyEvent.VK_RIGHT && userCol < grid.getNumCols() - 2){
+			grid.setCellImage(new Location(userRow, userCol), null);
+			userCol++;
+			handleCollision();
+			grid.setCellImage(new Location(userRow, userCol), getUserImg());	
+		}
+		else if(key == KeyEvent.VK_DOWN && userRow < grid.getNumRows() - 1 ){
+			grid.setCellImage(new Location(userRow, userCol), null);
+			userRow++;
+			handleCollision();
+			grid.setCellImage(new Location(userRow, userCol), getUserImg());	
+		}
+		else if(key == KeyEvent.VK_UP && userRow > 0 ){
+			grid.setCellImage(new Location(userRow, userCol), null);
+			userRow--;
+			handleCollision();
+			grid.setCellImage(new Location(userRow, userCol), getUserImg());	
+		}
+		else if (key == KeyEvent.VK_P){
+			int key2 = grid.checkLastKeyPressed();
+			while (key2 != KeyEvent.VK_P ){
+				grid.sleep(timerDelay);
+				key2 = grid.checkLastKeyPressed();
+			}
+		}
+		else if (key == KeyEvent.VK_D){
+			if(numDPress == 0){
+				grid.setLineColor(Color.GREEN);
+				numDPress++;
+			}
+			else{
+				grid.setLineColor(null);
+				numDPress--;
+			}				 
+		}
+		else if (key == KeyEvent.VK_COMMA)  {
+			if (timerDelay + SPEED <= 1000){
+				timerDelay += SPEED;
+				grid.sleep(timerDelay);
+			}
+			
+		}
+		else if (key == KeyEvent.VK_PERIOD)  {
+			if (timerDelay - SPEED >= 100){
+				timerDelay -= SPEED;
+				grid.sleep(timerDelay);
+			}
+		}
+	}
+	
+	// return the "score" of the game 
+	private int getScore() {
+		return score;    
+	}
+	
+	//returns number, of allowed collisions with avoid object, remaining
+	private int getLifeLine(){
+		return lifeline;
+	}
+	
+	// update the title bar of the game window 
+	public void updateTitle() {
+		grid.setTitle("Scrolling Game.  Score:  " + getScore() + " Lifeline: " + lifeline);
+	}
+	
+	// return true if the game is finished, false otherwise
+	//      used by play() to terminate the main game loop 
+	public boolean isGameOver() {
+		return(score == FINAL_SCORE || lifeline == 0);
+	}
+	
+	// display the intro screen
+	public void displayIntro(){
+		grid.setSplash("ink.png");
+		grid.setTitle(" Welcome to the Scrolling Game.");
+		handleClickOutsideGame();			
+		grid.setSplash(null);
+	}
+	
+	// display the game over screen
+	public void displayOutcome() {
+		grid.setSplash("ink.png");
+		if (score == FINAL_SCORE){
+			grid.setTitle("Congratulations, you won!!!");
+		}
+		else if (lifeline == 0){
+			grid.setTitle("Too bad, you lost!!!");
+		}
+		handleClickOutsideGame();
+		System.exit(0);
+		
+	}
+}

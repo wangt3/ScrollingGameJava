@@ -1,0 +1,101 @@
+import java.util.Random;
+
+abstract class ScrollingGame {
+	
+	protected static final int H_DIM = 5;
+	protected static final int W_DIM = 10;
+	protected static final int U_ROW = 0;
+	protected static final int U_COL = 0;
+	
+	protected static Random rand = new Random();
+	
+	protected GameGrid grid; 
+	protected int userRow;
+	protected int userCol;
+	protected int mid;
+	
+	protected int initialScore = 10;//must be greater than 0
+	protected int finalScore = initialScore;
+	protected int life = 5;//must be greater than 0
+	protected int lifeIncrement = 1;
+	protected int lifeline = life;
+	protected int score;
+	protected int scoreIncrement = 10;
+	protected int level = 1;
+	protected int sleep = 500;
+	
+	protected final int INITIAL_LIFE = life;
+	protected final int FINAL_LEVEL = 5;//must be greater than 0
+	
+	
+	//---------------- Abstract methods -----------------//
+	// methods you must implement in the Base and Creative Versions
+	
+	// update game state to reflect adding in new cells in the right-most column
+	public abstract void populateRightEdge();
+	
+	// updates the game state to reflect scrolling left by one column
+	public abstract void scrollLeft();
+	
+	// handles result of key press
+	public abstract void handleKeyPress();
+	
+	// handles results of mouse click
+	public abstract void handleMouseClick();
+
+	
+	// gets the user image for intial game set up
+	public abstract String getUserImg();
+	
+	// checks for game over conditions
+	public abstract boolean isGameOver();
+	
+	// changes the title bar in the game window
+	public abstract void updateTitle();
+	
+	// gives the game introduction
+	public abstract void displayIntro();
+	
+	// handles actions upon game end
+	public abstract void displayOutcome(int n);
+	
+	//initializes game background, the screen and position of the user
+	public abstract void start();
+	
+	//---------------------------------------------------//
+	//Controls game play from beginning to end
+	public void play() {
+		
+		start();
+		updateTitle(); 
+		
+		/* main game loop */
+		while (!isGameOver()) {
+		
+			handleKeyPress();       			
+			handleMouseClick();      
+			
+			if (userCol > mid) {  
+				scrollLeft();
+				populateRightEdge();
+			}
+			
+			updateTitle();
+		}
+		displayOutcome(0);
+	}
+	
+	//Initializes game play
+	protected void init(int hdim, int wdim, int urow, int ucol) {  
+		grid = new GameGrid(hdim, wdim); 
+		userRow = urow;
+		userCol = ucol;
+		mid = wdim / 2;
+		displayIntro();
+		
+	}
+	
+	
+	
+	
+}
